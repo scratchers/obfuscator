@@ -2,27 +2,24 @@
 
 $tokens = token_get_all(file_get_contents('example.php'));
 
-$registry = array(
-	'original' => array(),
-	'replaced' => array(),
-);
+$registry = array();
 
 $tokens = array_map(function($element) use (&$registry){
 	// check to see if it's a variable
 	if(is_array($element) && $element[0] === T_VARIABLE){
 		// check to see if we've already registered it
-		if(!isset($registry['original'][$element[1]])){
+		if(!isset($registry[$element[1]])){
 			// make sure our random string hasn't already been generated
 			do {
 				$replacement = '$'.random_str(6);
-			} while(in_array($replacement, $registry['replaced']));
+			} while(in_array($replacement, $registry));
 
 			// map the original and register the replacement
-			$registry['original'][$element[1]] = $registry['replaced'][] = $replacement;
+			$registry[$element[1]] = $replacement;
 		}
 
 		// rename the variable
-		$element[1] = $registry['original'][$element[1]];
+		$element[1] = $registry[$element[1]];
 	}
 
 	return $element;
