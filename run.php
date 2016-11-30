@@ -75,11 +75,7 @@ $tokens = array_map(function($element) use ($registry){
 
 // dump the tokens back out to rebuild the page with obfuscated names
 foreach($tokens as $token){
-	if(is_array($token)){
-		echo $token[1];
-	} else {
-		echo $token;
-	}
+	echo $token[1] ?? $token;
 }
 
 /**
