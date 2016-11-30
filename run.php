@@ -2,8 +2,6 @@
 
 $tokens = token_get_all(file_get_contents('example.php'));
 
-$registry = array();
-
 $globals = array(
 	'$GLOBALS',
 	'$_SERVER',
@@ -15,6 +13,10 @@ $globals = array(
 	'$_REQUEST',
 	'$_ENV',
 );
+
+// prevent name clashes with randomly generated strings and native functions
+$registry = get_defined_functions();
+$registry = $registry['internal'];
 
 // first pass to change all the variable names and function name declarations
 foreach($tokens as $key => $element){
@@ -45,6 +47,7 @@ foreach($tokens as $key => $element){
 	// check to see if we've already registered it
 	if(!isset($registry[$tokens[$index][1]])){
 		// make sure our random string hasn't already been generated
+		// or just so crazily happens to be the same name as an internal function
 		do {
 			$replacement = $prefix.random_str(16);
 		} while(in_array($replacement, $registry));
