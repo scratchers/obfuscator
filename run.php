@@ -4,24 +4,51 @@ $tokens = token_get_all(file_get_contents('example.php'));
 
 $registry = array();
 
-$tokens = array_map(function($element) use (&$registry){
-	// check to see if it's a variable
-	if(is_array($element) && $element[0] === T_VARIABLE){
-		// check to see if we've already registered it
-		if(!isset($registry[$element[1]])){
-			// make sure our random string hasn't already been generated
-			do {
-				$replacement = '$'.random_str(6);
-			} while(in_array($replacement, $registry));
-
-			// map the original and register the replacement
-			$registry[$element[1]] = $replacement;
-		}
-
-		// rename the variable
-		$element[1] = $registry[$element[1]];
+// first pass to change all the variable names and function name declarations
+foreach($tokens as $key => $element){
+	// make sure it's an interesting token
+	if(!is_array($element)){
+		continue;
+	}
+	switch ($element[0]) {
+		case T_VARIABLE:
+			$prefix = '$';
+			$index = $key;
+			break;
+		case T_FUNCTION:
+			$prefix = '';
+			// this jumps over the whitespace to get the function name
+			$index = $key + 2;
+			break;
+		default:
+			continue 2;
 	}
 
+	// check to see if we've already registered it
+	if(!isset($registry[$tokens[$index][1]])){
+		// make sure our random string hasn't already been generated
+		do {
+			$replacement = $prefix.random_str(6);
+		} while(in_array($replacement, $registry));
+
+		// map the original and register the replacement
+		$registry[$tokens[$index][1]] = $replacement;
+	}
+
+	// rename the variable
+	$tokens[$index][1] = $registry[$tokens[$index][1]];
+}
+
+// second pass to rename all the function invocations
+$tokens = array_map(function($element) use ($registry){
+	// check to see if it's a function identifier
+	if(is_array($element) && $element[0] === T_STRING){
+		// make sure it's one of our registered function names
+		if(isset($registry[$element[1]])){
+			// rename the variable
+			$element[1] = $registry[$element[1]];
+		}
+	}
 	return $element;
 },$tokens);
 
