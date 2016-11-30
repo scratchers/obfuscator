@@ -23,18 +23,21 @@ foreach($tokens as $key => $element){
 		continue;
 	}
 	switch ($element[0]) {
+		case T_FUNCTION:
+			$prefix = '';
+			// this jumps over the whitespace to get the function name
+			$index = $key + 2;
+			break;
+
 		case T_VARIABLE:
+			// ignore the superglobals
 			if(in_array($element[1], $globals)){
 				continue 2;
 			}
 			$prefix = '$';
 			$index = $key;
 			break;
-		case T_FUNCTION:
-			$prefix = '';
-			// this jumps over the whitespace to get the function name
-			$index = $key + 2;
-			break;
+
 		default:
 			continue 2;
 	}
@@ -67,7 +70,7 @@ $tokens = array_map(function($element) use ($registry){
 	return $element;
 },$tokens);
 
-// dump the tokens back out to rebuild the page with obfuscated variables
+// dump the tokens back out to rebuild the page with obfuscated names
 foreach($tokens as $token){
 	if(is_array($token)){
 		echo $token[1];
