@@ -28,7 +28,7 @@ foreach($tokens as $key => $element){
 	if(!isset($registry[$tokens[$index][1]])){
 		// make sure our random string hasn't already been generated
 		do {
-			$replacement = $prefix.random_str(6);
+			$replacement = $prefix.random_str(16);
 		} while(in_array($replacement, $registry));
 
 		// map the original and register the replacement
@@ -74,7 +74,7 @@ foreach($tokens as $token){
  *                         to select from
  * @return string
  */
-function random_str($length, $keyspace = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+function random_str($length, $keyspace = 'abcdefghijklmnopqrstuvwxyz')
 {
     $str = '';
     $max = mb_strlen($keyspace, '8bit') - 1;
