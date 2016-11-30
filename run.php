@@ -19,7 +19,7 @@ $registry = get_defined_functions();
 $registry = $registry['internal'];
 
 // first pass to change all the variable names and function name declarations
-foreach($tokens as $key => $element){
+foreach($tokens as $key => &$element){
 	// make sure it's an interesting token
 	if(!is_array($element)){
 		continue;
@@ -39,6 +39,9 @@ foreach($tokens as $key => $element){
 			$prefix = '$';
 			$index = $key;
 			break;
+
+		case T_COMMENT:
+			$element = null;
 
 		default:
 			continue 2;

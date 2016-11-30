@@ -1,14 +1,20 @@
 <?php
 
+// comment here
+
 $example = 'some $string';
 
 if(isset($_POST['something'])){
-	echo $_POST['something'];
+	echo /* another comment */ $_POST['something'];
 }
 
 function exampleFunction($variable2){
   echo $variable2;
 }
+
+/*
+  $multi-line omment
+*/
 
 exampleFunction($example);
 
