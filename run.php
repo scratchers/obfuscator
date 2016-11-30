@@ -4,6 +4,18 @@ $tokens = token_get_all(file_get_contents('example.php'));
 
 $registry = array();
 
+$globals = array(
+	'$GLOBALS',
+	'$_SERVER',
+	'$_GET',
+	'$_POST',
+	'$_FILES',
+	'$_COOKIE',
+	'$_SESSION',
+	'$_REQUEST',
+	'$_ENV',
+);
+
 // first pass to change all the variable names and function name declarations
 foreach($tokens as $key => $element){
 	// make sure it's an interesting token
@@ -12,6 +24,9 @@ foreach($tokens as $key => $element){
 	}
 	switch ($element[0]) {
 		case T_VARIABLE:
+			if(in_array($element[1], $globals)){
+				continue 2;
+			}
 			$prefix = '$';
 			$index = $key;
 			break;

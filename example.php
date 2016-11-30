@@ -2,6 +2,10 @@
 
 $example = 'some $string';
 
+if(isset($_POST['something'])){
+	echo $_POST['something'];
+}
+
 function exampleFunction($variable2){
   echo $variable2;
 }
